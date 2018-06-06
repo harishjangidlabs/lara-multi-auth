@@ -1,2 +1,2 @@
-# lara-multi-auth
-Laravel Multi Auth
+# lara-multi-auth-native
+Laravel Multi Auth Native Admin and Users Table
