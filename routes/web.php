@@ -29,6 +29,21 @@ Route::prefix('admin')->group(function(){
 	Route::get('/', 'Admin\DashboardController@index')->name('admin.dashboard');
 	Route::get('dashboard', 'Admin\DashboardController@index')->name('admin.dashboard');
 
+});
 
+Route::group(['namespace'=>'Admin','middleware'=>'auth:admin','prefix'=>'admin'],function () {
+
+	// Users Routes
+	Route::resource('user','UserController');
+	// Roles Routes
+	Route::resource('role','RoleController');
+	// Permission Routes
+	Route::resource('permission','PermissionController');
+	// Post Routes
+	Route::resource('post','PostController');
+	// Tag Routes
+	Route::resource('tag','TagController');
+	// Category Routes
+	Route::resource('category','CategoryController');
 
 });
