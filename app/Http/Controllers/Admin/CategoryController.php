@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 
 class CategoryController extends Controller
 {
+
+
+	public function __construct() {
+		$this->middleware( 'auth:admin' );
+	}
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+	    $categories = Category::all();
+
+	    return view( 'admin.category.show', compact( 'categories' ) );
     }
 
     /**
@@ -24,7 +33,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+	    return view( 'admin.category.create' );
     }
 
     /**
@@ -35,7 +44,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+	    $this->validate( $request, [
+		    'name' => 'required'
+	    ] );
+
+	    $category = new Category();
+
+	    $category->name   = $request->name;
+	    $category->slug   = Category::makeSlugFromTitle( $request->name );
+	    $category->status = $request->status;
+
+	    $category->save();
+
+	    return redirect( route( 'category.index' ) );
     }
 
     /**
@@ -57,7 +78,9 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+	    $category = Category::where( 'id', $id )->first();
+
+	    return view( 'admin.category.edit', compact( 'category' ) );
     }
 
     /**
@@ -69,7 +92,25 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+	    $this->validate( $request, [
+		    'name' => 'required',
+	    ] );
+
+	    $category = Category::find( $id );
+
+	    $requestedSlug = str_slug( $request->name );
+
+	    if ( $category->slug != $requestedSlug ) {
+		    $category->slug = Category::makeSlugFromTitle( $request->name );
+	    }
+
+	    $category->name = $request->name;
+
+	    //dd($category);
+
+	    $category->save();
+
+	    return redirect( route( 'category.index' ) );
     }
 
     /**
@@ -80,6 +121,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+	    category::where( 'id', $id )->delete();
+
+	    return redirect()->back();
     }
 }
