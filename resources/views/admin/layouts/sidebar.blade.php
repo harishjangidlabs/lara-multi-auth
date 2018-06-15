@@ -68,6 +68,15 @@
                         <p>Category Manager</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{route('tag.index')}}" class="nav-link">
+                        <i class="nav-icon fa fa-edit"></i>
+
+                        <p>Tags Manager</p>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{route('post.index')}}" class="nav-link">
                         <i class="nav-icon fa fa-edit"></i>
