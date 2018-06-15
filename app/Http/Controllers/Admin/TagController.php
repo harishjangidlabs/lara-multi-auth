@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +15,9 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+	    $tags = Tag::all();
+
+	    return view( 'admin.tag.show', compact( 'tags' ) );
     }
 
     /**
@@ -24,7 +27,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+	    return view( 'admin.tag.create' );
     }
 
     /**
@@ -35,7 +38,16 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+	    $this->validate( $request, [
+		    'name' => 'required'
+	    ] );
+
+	    $tag       = new Tag();
+	    $tag->name = $request->name;
+	    $tag->slug = Tag::makeSlugFromTitle( $request->name );
+	    $tag->save();
+
+	    return redirect( route( 'tag.index' ) );
     }
 
     /**
@@ -46,7 +58,9 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        //
+	    $tag = Tag::find( $id );
+
+	    return view( 'admin.tag.view', compact( 'tag' ) );
     }
 
     /**
@@ -57,7 +71,9 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        //
+	    $tag = Tag::find( $id );
+
+	    return view( 'admin.tag.edit', compact( 'tag' ) );
     }
 
     /**
@@ -69,7 +85,22 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+	    $this->validate( $request, [
+		    'name' => 'required'
+	    ] );
+
+	    $tag           = Tag::find( $id );
+	    $requestedSlug = str_slug( $request->name );
+
+	    if ( $tag->slug != $requestedSlug ) {
+		    $tag->slug = Tag::makeSlugFromTitle( $request->name );
+	    }
+
+	    $tag->name = $request->name;
+
+	    $tag->save();
+
+	    return redirect( route( 'tag.index' ) );
     }
 
     /**
@@ -80,6 +111,8 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+	    Tag::where( 'id', $id )->delete();
+
+	    return redirect()->back();
     }
 }
