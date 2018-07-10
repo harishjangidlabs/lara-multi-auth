@@ -22,8 +22,7 @@ class PostController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		$posts = Post::all();
-
+		$posts = Post::with( 'tags', 'categories' )->paginate( 1 );
 		return view( 'admin.post.show', compact( 'posts' ) );
 	}
 
@@ -55,6 +54,7 @@ class PostController extends Controller {
 
 		if ( $request->hasFile( 'image' ) ) {
 			$imageName = $request->image->store( 'public/posts' );
+			$imageName = str_replace( 'public', '', $imageName );
 		} else {
 			return 'No';
 		}
@@ -85,9 +85,9 @@ class PostController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show( $id ) {
-		$post       = post::with( 'tags', 'categories' )->where( 'id', $id )->first();
-		$tags       = tag::all();
-		$categories = category::all();
+		$post       = Post::with( 'tags', 'categories' )->where( 'id', $id )->first();
+		$tags       = Tag::all();
+		$categories = Category::all();
 
 		return view( 'admin.post.view', compact( 'post' ) );
 	}
@@ -135,6 +135,7 @@ class PostController extends Controller {
 				Storage::Delete( $post->image );
 			}
 			$imageName = $request->image->store( 'public/posts' );
+			$imageName = str_replace( 'public', '', $imageName );
 		}
 
 		if ( ! empty( $imageName ) ) {

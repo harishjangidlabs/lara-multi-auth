@@ -14,6 +14,22 @@
         <!-- Main content -->
         <section class="content">
 
+
+            <div class="card card-info card-outline">
+                <div class="card-header">
+                    <h3 class="card-title pull-left">Filter Your Result</h3>
+
+                    <div class="card-body">
+                        <div class="box">
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
             <!-- Default box -->
             <div class="card card-info card-outline">
                 <div class="card-header">
@@ -34,15 +50,31 @@
                                 <tr>
                                     <th>S.No</th>
                                     <th>Post Name</th>
-                                    {{--<th>Slug</th>--}}
+                                    <th>Post Image</th>
+                                    <th>Category</th>
+                                    <th>Tags</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($posts as $post)
+                                    <?php $tagLists = $catLists = [ ]; ?>
+                                    @foreach($post->tags as $tag)
+                                        <?php  $tagLists[] = $tag->name; ?>
+                                    @endforeach
+
+                                    @foreach($post->categories as $category)
+                                        <?php  $catLists[] = $category->name; ?>
+                                    @endforeach
+
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>{{ $post->title }}</td>
+                                        <td><img src="/img/{{ $post->image }}?w=100&h=100i&fit=crop"></td>
+                                        <td>{{ implode(',',$tagLists) }}</td>
+                                        <td>{{ implode(',',$catLists) }}</td>
+                                        <td>{{ $post->status }}</td>
                                         <td>
                                             <a href="{{ route('post.edit',$post->id) }}"><span
                                                         class="fa fa-edit"></span></a>
@@ -71,21 +103,25 @@
                                 <tr>
                                     <th>S.No</th>
                                     <th>Post Name</th>
-                                    {{--<th>Slug</th>--}}
+                                    <th>Post Image</th>
+                                    <th>Category</th>
+                                    <th>Tags</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                                 </tfoot>
                             </table>
+
                         </div>
                         <!-- /.box-body -->
                     </div>
                 </div>
                 <!-- /.box-body -->
-                <div class="box-footer">
-
-                </div>
-                <!-- /.box-footer-->
             </div>
+            <div class="box-footer">
+                {{ $posts->links('vendor.pagination.bootstrap-4') }}
+            </div>
+            <!-- /.box-footer-->
             <!-- /.box -->
 
         </section>

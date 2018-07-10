@@ -48,3 +48,8 @@ Route::group(['namespace'=>'Admin','middleware'=>'auth:admin','prefix'=>'admin']
 	Route::resource('category','CategoryController');
 
 });
+
+
+Route::get( 'img/{path}', function ( $path, League\Glide\Server $server, Illuminate\Http\Request $request ) {
+	$server->outputImage( $path, $request->all() );
+} )->where( 'path', '.+' );
